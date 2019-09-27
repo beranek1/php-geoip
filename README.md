@@ -1,5 +1,5 @@
 # GeoIP
-PHP Library for getting the geolocation of ip addresses.
+PHP Library for retriving the geolocation of ip addresses.
 
 ## Usage
 All you need to do is including "geoip.php":
