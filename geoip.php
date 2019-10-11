@@ -20,10 +20,10 @@ function get_continent_by_country($country, $countrytocontinent) {
 
 function get_country_by_host($host) {
     if(isset($host) && filter_var($host, FILTER_VALIDATE_IP) == false) {
-        $domainparts = explode(".", $host);
-        $topleveldomain = $domainparts[count($domainparts) - 1];
-        if(strlen($topleveldomain) == 2) {
-            return strtoupper($topleveldomain);
+        $domain_parts = explode(".", $host);
+        $top_level_domain = $domain_parts[count($domain_parts) - 1];
+        if(strlen($top_level_domain) == 2) {
+            return strtoupper($top_level_domain);
         }
     }
     return null;
@@ -36,9 +36,9 @@ function get_country_by_ip($ip) {
         if($country == null && $ip != "127.0.0.1" && $ip != "::1") {
             $country = get_country_by_rdap($ip);
             if($country == null) {
-                $domainparts = explode(".", $host);
-                $topleveldomain = $domainparts[count($domainparts) - 1];
-                if($topleveldomain == "com" || $topleveldomain == "net" || $topleveldomain == "edu" || $topleveldomain == "gov") {
+                $domain_parts = explode(".", $host);
+                $top_level_domain = $domain_parts[count($domain_parts) - 1];
+                if($top_level_domain == "com" || $top_level_domain == "net" || $top_level_domain == "edu" || $top_level_domain == "gov") {
                     return "US";
                 }
             }
@@ -57,10 +57,10 @@ function get_country_by_rdap($query) {
                 return null;
             }
             $iana_ipv4 = json_decode($iana_ipv4, true);
-            $ipparts = explode(".", $ip);
+            $ip_parts = explode(".", $ip);
             foreach ($iana_ipv4["services"] as $service) {
                 foreach ($service[0] as $iprange) {
-                    if($iprange == $ipparts[0].".0.0.0/8") {
+                    if($iprange == $ip_parts[0].".0.0.0/8") {
                         $service_rdap = file_get_contents(preg_replace("/https/i", "http", $service[1][0])."ip/".$ip);
                         if($service_rdap == FALSE) {
                             return null;
@@ -80,10 +80,10 @@ function get_country_by_rdap($query) {
                 return null;
             }
             $iana_ipv6 = json_decode($iana_ipv6, true);
-            $ipparts = explode(":", $ip);
+            $ip_parts = explode(":", $ip);
             foreach ($iana_ipv6["services"] as $service) {
                 foreach ($service[0] as $iprange) {
-                    if(preg_match("/".$ipparts[0].":".$ipparts[1]."::\/\d[\d]*/", $iprange) || preg_match("/".$ipparts[0]."::\/\d[\d]*/", $iprange)) {
+                    if(preg_match("/".$ip_parts[0].":".$ip_parts[1]."::\/\d[\d]*/", $iprange) || preg_match("/".$ip_parts[0]."::\/\d[\d]*/", $iprange)) {
                         $service_rdap = file_get_contents(preg_replace("/https/i", "http", $service[1][0])."ip/".$ip);
                         if($service_rdap == FALSE) {
                             return null;
